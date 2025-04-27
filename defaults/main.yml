@@ -15,7 +15,7 @@ valkey_gid: ''
 
 valkey_connection_password: ""
 
-valkey_base_path: "{{ valkey_identifier }}"
+valkey_base_path: "/{{ valkey_identifier }}"
 valkey_config_path: "{{ valkey_base_path }}/config"
 valkey_data_path: "{{ valkey_base_path }}/data"
 
