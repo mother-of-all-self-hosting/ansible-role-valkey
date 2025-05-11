@@ -31,7 +31,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 			--tmpfs=/tmp:rw,noexec,nosuid,size=100m \
 			--network={{ valkey_container_network }} \
 			{% if valkey_container_valkey_bind_port %}
-			-p {{ valkey_container_valkey_bind_port }}:6379 \
+			-p {{ valkey_container_valkey_bind_port }}:{{ valkey_container_http_port }} \
 			{% endif %}
 			--mount type=bind,src={{ valkey_config_path }}/valkey.conf,dst=/usr/local/etc/valkey/valkey.conf,ro \
 			--mount type=bind,src={{ valkey_data_path }},dst=/data \
