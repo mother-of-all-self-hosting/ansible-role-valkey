@@ -46,6 +46,6 @@
 
 - name: Ensure Valkey systemd installed
   ansible.builtin.template:
-    src: "{{ role_path }}/templates/valkey.service.j2"
+    src: "{{ role_path }}/templates/systemd/valkey.service.j2"
     dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ valkey_identifier }}.service"
     mode: 0644
