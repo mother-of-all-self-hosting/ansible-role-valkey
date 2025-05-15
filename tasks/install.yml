@@ -44,7 +44,7 @@
     driver: bridge
     driver_options: "{{ devture_systemd_docker_base_container_networks_driver_options }}"
 
-- name: Ensure Valkey systemd installed
+- name: Ensure Valkey systemd service is present
   ansible.builtin.template:
     src: "{{ role_path }}/templates/systemd/valkey.service.j2"
     dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ valkey_identifier }}.service"
