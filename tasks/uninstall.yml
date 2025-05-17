@@ -11,14 +11,14 @@
 
 - when: valkey_service_stat.stat.exists | bool
   block:
-    - name: Ensure Valkey is stopped
+    - name: Ensure Valkey systemd service is stopped
       ansible.builtin.systemd:
         name: "{{ valkey_identifier }}"
         state: stopped
         enabled: false
         daemon_reload: true
 
-    - name: Ensure Valkey systemd service doesn't exist
+    - name: Ensure Valkey systemd service does not exist
       ansible.builtin.file:
         path: "{{ devture_systemd_docker_base_systemd_path }}/{{ valkey_identifier }}.service"
         state: absent
