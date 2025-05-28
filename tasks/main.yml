@@ -3,27 +3,25 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
 - name: Perform Valkey installation tasks
-  block:
-    - name: Validate Valkey configuration
-      when: valkey_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
-
-    - name: Install Valkey
-      when: valkey_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
   tags:
     - setup-all
     - setup-valkey
     - install-all
     - install-valkey
+  block:
+    - name: Validate Valkey configuration
+      when: valkey_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
+    - name: Install Valkey
+      when: valkey_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
 - name: Perform Valkey uninstallation tasks
+  tags:
+    - setup-all
+    - setup-valkey
   block:
     - name: Uninstall Valkey
       when: not valkey_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
-  tags:
-    - setup-all
-    - setup-valkey
