@@ -4,6 +4,7 @@
 
 ---
 - name: Perform Valkey installation tasks
+  when: valkey_enabled | bool
   tags:
     - setup-all
     - setup-valkey
@@ -11,17 +12,15 @@
     - install-valkey
   block:
     - name: Validate Valkey configuration
-      when: valkey_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
     - name: Install Valkey
-      when: valkey_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
 - name: Perform Valkey uninstallation tasks
+  when: not valkey_enabled | bool
   tags:
     - setup-all
     - setup-valkey
   block:
     - name: Uninstall Valkey
-      when: not valkey_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
