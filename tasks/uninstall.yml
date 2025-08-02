@@ -65,6 +65,6 @@
         devture_playbook_runtime_messages_list | default([])
         +
         [
-          "Note: You are not using a local Valkey instance, but some old data remains from before in `{{ valkey_data_path }}`. Feel free to delete it."
+          "Note: You are not using a local Valkey instance, but some old data remains from before in `" + valkey_data_path + "`. Feel free to delete it."
         ]
       }}
