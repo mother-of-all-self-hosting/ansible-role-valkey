@@ -24,9 +24,9 @@
         path: "{{ devture_systemd_docker_base_systemd_path }}/{{ valkey_identifier }}.service"
         state: absent
 
-    - name: Ensure Valkey environment variables file does not exist
+    - name: Ensure Valkey config file does not exist
       ansible.builtin.file:
-        path: "{{ valkey_base_path }}/{{ item }}"
+        path: "{{ valkey_config_path }}/{{ item }}"
         state: absent
       with_items:
         - valkey.conf
