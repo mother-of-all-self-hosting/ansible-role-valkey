@@ -41,18 +41,21 @@
         cmd: "rmdir {{ valkey_config_path }}"
       register: valkey_config_path_deletion_result
       changed_when: valkey_config_path_deletion_result.rc == 0
+      failed_when: false
 
     - name: Ensure Valkey local data path does not exist if empty
       ansible.builtin.command:
         cmd: "rmdir {{ valkey_data_path }}"
       register: valkey_data_path_deletion_result
       changed_when: valkey_data_path_deletion_result.rc == 0
+      failed_when: false
 
     - name: Ensure Valkey base path does not exist if empty
       ansible.builtin.command:
         cmd: "rmdir {{ valkey_base_path }}"
       register: valkey_base_path_deletion_result
       changed_when: valkey_base_path_deletion_result.rc == 0
+      failed_when: false
 
     - name: Ensure Valkey container network does not exist via community.docker.docker_network
       when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
