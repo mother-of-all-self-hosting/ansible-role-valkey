@@ -58,7 +58,9 @@ valkey_container_additional_networks_custom: []
 valkey_container_stop_grace_time_seconds: "{{ [devture_systemd_docker_base_container_stop_grace_time_seconds, 30] | max }}"
 
 # A list of extra arguments to pass to the container
-valkey_container_extra_arguments: []
+valkey_container_extra_arguments: "{{ valkey_container_extra_arguments_auto + valkey_container_extra_arguments_custom }}"
+valkey_container_extra_arguments_auto: []
+valkey_container_extra_arguments_custom: []
 
 # List of systemd services that the Valkey systemd service depends on
 valkey_systemd_required_services_list: "{{ (valkey_systemd_required_services_list_default + valkey_systemd_required_services_list_auto + valkey_systemd_required_services_list_custom) | unique }}"
