@@ -57,7 +57,7 @@ valkey_container_additional_networks_custom: []
 # we default to at least 30 seconds.
 valkey_container_stop_grace_time_seconds: "{{ [devture_systemd_docker_base_container_stop_grace_time_seconds, 30] | max }}"
 
-# A list of extra arguments to pass to the container
+# A list of extra arguments to pass to the container (`docker create` command)
 valkey_container_extra_arguments: "{{ valkey_container_extra_arguments_auto + valkey_container_extra_arguments_custom }}"
 valkey_container_extra_arguments_auto: []
 valkey_container_extra_arguments_custom: []
