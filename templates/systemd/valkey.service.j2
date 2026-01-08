@@ -28,7 +28,6 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --user={{ valkey_uid }}:{{ valkey_gid }} \
       --cap-drop=ALL \
       --read-only \
-      --tmpfs=/tmp:rw,noexec,nosuid,size=100m \
       --network={{ valkey_container_network }} \
       {% if valkey_container_valkey_bind_port %}
       -p {{ valkey_container_valkey_bind_port }}:{{ valkey_container_http_port }} \
@@ -36,6 +35,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --env-file={{ valkey_base_path }}/env \
       --mount type=bind,src={{ valkey_config_path }}/valkey.conf,dst=/usr/local/etc/valkey/valkey.conf,ro \
       --mount type=bind,src={{ valkey_data_path }},dst=/data \
+      --tmpfs=/tmp:rw,noexec,nosuid,size=100m \
       {% for arg in valkey_container_extra_arguments %}
       {{ arg }} \
       {% endfor %}
