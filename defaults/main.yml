@@ -1,5 +1,5 @@
-# SPDX-FileCopyrightText: 2024 - 2025 Slavi Pantaleev
-# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+# SPDX-FileCopyrightText: 2024, 2025 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -77,3 +77,9 @@ valkey_systemd_wanted_services_list_custom: []
 valkey_connection_password: ""
 
 valkey_arch: x86_64
+
+# Specify the timezone
+valkey_environment_variables_tz: UTC
+
+# Additional environment variables.
+valkey_environment_variables_additional_variables: ""

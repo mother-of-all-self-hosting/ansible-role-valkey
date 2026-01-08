@@ -1,6 +1,6 @@
 {#
-SPDX-FileCopyrightText: 2024 - 2025 Slavi Pantaleev
-SPDX-FileCopyrightText: 2025 Suguru Hirahara
+SPDX-FileCopyrightText: 2024, 2025 Slavi Pantaleev
+SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 #}
@@ -33,6 +33,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       {% if valkey_container_valkey_bind_port %}
       -p {{ valkey_container_valkey_bind_port }}:{{ valkey_container_http_port }} \
       {% endif %}
+      --env-file={{ valkey_base_path }}/env \
       --mount type=bind,src={{ valkey_config_path }}/valkey.conf,dst=/usr/local/etc/valkey/valkey.conf,ro \
       --mount type=bind,src={{ valkey_data_path }},dst=/data \
       {% for arg in valkey_container_extra_arguments %}
