@@ -25,7 +25,16 @@
     group: "{{ valkey_gid }}"
   with_items:
     - env
-    - "valkey.conf"
+
+- name: Ensure Valkey config file installed
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/{{ item }}.j2"
+    dest: "{{ valkey_config_path }}/{{ item }}"
+    mode: "0640"
+    owner: "{{ valkey_uid }}"
+    group: "{{ valkey_gid }}"
+  with_items:
+    - valkey.conf
 
 - name: Run if self-building of Valkey container image is not enabled
   when: "not valkey_container_image_self_build | bool"
