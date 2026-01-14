@@ -36,7 +36,7 @@ valkey_container_image_self_build_repo_dockerfile_dir: "{{ valkey_container_imag
 # Controls whether the container exposes a port (tcp/6379 in the container)
 # that can be used to access Valkey from outside the container
 #
-# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:6379"), or empty string to not expose.
+# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
 valkey_container_valkey_bind_port: ""
 
 # The base container network. It will be auto-created by this role if it doesn't exist already.
