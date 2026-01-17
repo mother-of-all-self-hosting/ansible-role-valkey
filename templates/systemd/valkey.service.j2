@@ -29,8 +29,8 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --cap-drop=ALL \
       --read-only \
       --network={{ valkey_container_network }} \
-      {% if valkey_container_http_host_bind_port %}
-      -p {{ valkey_container_http_host_bind_port }}:{{ valkey_container_http_port }} \
+      {% if valkey_container_tcp_host_bind_port %}
+      -p {{ valkey_container_tcp_host_bind_port }}:{{ valkey_container_tcp_port }} \
       {% endif %}
       --env-file={{ valkey_base_path }}/env \
       --mount type=bind,src={{ valkey_config_path }}/valkey.conf,dst=/usr/local/etc/valkey/valkey.conf,ro \
