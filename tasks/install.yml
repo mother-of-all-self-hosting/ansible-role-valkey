@@ -26,7 +26,7 @@
   with_items:
     - env
 
-- name: Ensure Valkey config file installed
+- name: Ensure Valkey configuration file installed
   ansible.builtin.template:
     src: "{{ role_path }}/templates/{{ item }}.j2"
     dest: "{{ valkey_config_path }}/{{ item }}"
