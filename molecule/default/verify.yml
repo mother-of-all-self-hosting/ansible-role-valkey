@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
+# SPDX-FileCopyrightText: 2026 spatterlight
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Verify Valkey systemd service
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Wait for Valkey service to become active (up to 180s)
+      ansible.builtin.systemd:
+        name: valkey.service
+      register: valkey_service
+      until: valkey_service.status.ActiveState == 'active'
+      retries: 36
+      delay: 5
+
+    - name: Assert Valkey service is active
+      ansible.builtin.assert:
+        that: valkey_service.status.ActiveState == 'active'
+        fail_msg: "valkey.service not active ({{ valkey_service.status.ActiveState }})"
+        success_msg: "valkey.service is active"
+
+    - name: Retrieve Valkey service log for debugging
+      when: valkey_debug_service_enabled | bool
+      ansible.builtin.command:
+        cmd: journalctl -xeu valkey.service
+      changed_when: false
+
+    - name: Show Valkey systemd service status summary
+      ansible.builtin.debug:
+        msg:
+          - "Valkey systemd: {{ valkey_service.status.ActiveState }}"
