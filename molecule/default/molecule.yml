@@ -1,5 +1,6 @@
 # SPDX-FileCopyrightText: 2026 Suguru Hirahara
 # SPDX-FileCopyrightText: 2026 spatterlight
+# SPDX-FileCopyrightText: 2026 Slavi Pantaleev
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -35,6 +36,10 @@ provisioner:
         valkey_uid: 1000
         valkey_gid: 1000
         valkey_arch: amd64
+
+        # Verification asserts that unauthenticated clients are turned away,
+        # which only tests anything when a password is actually configured.
+        valkey_connection_password: molecule-connection-password
   env:
     # Workaround for https://github.com/ansible/molecule/issues/4391
     ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/..:/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles:~/.ansible/roles
