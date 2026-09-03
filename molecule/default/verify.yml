@@ -150,7 +150,7 @@
       ansible.builtin.set_fact:
         valkey_reported_version: "{{ (valkey_info_server.stdout | regex_search('valkey_version:([^\\r\\n]+)', '\\1') | first) | trim }}"
 
-    - name: Assert the running Valkey is the version the role asks for
+    - name: Assert the running Valkey is the version this role installs
       ansible.builtin.assert:
         that: valkey_reported_version.startswith(valkey_defaults.valkey_version | string)
         fail_msg: >-
