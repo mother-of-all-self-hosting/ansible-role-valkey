@@ -153,10 +153,8 @@
     - name: Assert the running Valkey is the version this role installs
       ansible.builtin.assert:
         that: valkey_reported_version.startswith(valkey_defaults.valkey_version | string)
-        fail_msg: >-
-          Valkey reports version {{ valkey_reported_version | default('none') }},
-          but the role asks for {{ valkey_defaults.valkey_version }}
-        success_msg: "Valkey reports version {{ valkey_reported_version }}"
+        fail_msg: "Valkey reports {{ valkey_reported_version | default('none') }}, expected {{ valkey_defaults.valkey_version }}"
+        success_msg: "Valkey reports {{ valkey_reported_version }}"
 
     - name: Show the Valkey verification summary
       ansible.builtin.debug:
