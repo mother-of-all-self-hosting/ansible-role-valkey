@@ -158,11 +158,11 @@
           but the role asks for {{ valkey_defaults.valkey_version }}
         success_msg: "Valkey reports version {{ valkey_reported_version }}"
 
-    - name: Show Valkey verification summary
+    - name: Show the Valkey verification summary
       ansible.builtin.debug:
         msg:
           - "Valkey systemd: {{ valkey_service.status.ActiveState }}"
-          - "PING over TCP: {{ valkey_ping_tcp.stdout }}"
-          - "PING over UNIX socket: {{ valkey_ping_socket.stdout }}"
-          - "SET/GET round-trip: {{ valkey_get.stdout }}"
-          - "Version: {{ valkey_reported_version }}"
+          - "Valkey version: {{ valkey_reported_version }}"
+          - "Valkey PING over TCP: {{ valkey_ping_tcp.stdout }}"
+          - "Valkey PING over UNIX socket: {{ valkey_ping_socket.stdout }}"
+          - "Valkey SET/GET round-trip: {{ valkey_get.stdout }}"
