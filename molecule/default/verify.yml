@@ -141,7 +141,7 @@
       register: valkey_info_server
       changed_when: false
 
-    - name: Determine the version reported by the running Valkey
+    - name: Determine the version of the running Valkey
       ansible.builtin.set_fact:
         valkey_reported_version: "{{ (valkey_info_server.stdout | regex_search('valkey_version:([^\\r\\n]+)', '\\1') | first) | trim }}"
 
