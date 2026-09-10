@@ -11,6 +11,8 @@
   gather_facts: false
 
   tasks:
+    - name: Verify that Valkey works
+      block:
     # The role is not included in this playbook, so its defaults are not in
     # scope. Reading defaults/main.yml directly ties the version assertion
     # below.
@@ -165,3 +167,19 @@
           - "Valkey PING over TCP: {{ valkey_ping_tcp.stdout }}"
           - "Valkey PING over UNIX socket: {{ valkey_ping_socket.stdout }}"
           - "Valkey SET/GET round-trip: {{ valkey_get.stdout }}"
+
+      rescue:
+        # Whatever went wrong, the reason is almost always in the systemd service log.
+        - name: Retrieve the Valkey systemd service log
+          ansible.builtin.command:
+            cmd: journalctl --no-pager --output=cat --unit=valkey.service
+          register: valkey_service_log
+          changed_when: false
+
+        - name: Show the Valkey systemd service log
+          ansible.builtin.debug:
+            var: valkey_service_log.stdout_lines
+
+        - name: Fail because verification did not pass
+          ansible.builtin.fail:
+            msg: "Valkey verification failed. The systemd service log is printed above."
