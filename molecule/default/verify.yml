@@ -10,6 +10,10 @@
   become: true
   gather_facts: false
 
+  vars:
+    valkey_verify_units:
+      - valkey.service
+
   tasks:
     - name: Verify that Valkey works
       block:
@@ -21,13 +25,14 @@
             file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
             name: valkey_defaults
 
-        - name: Wait for the Valkey systemd service to become active (up to 180s)
+        - name: Wait for the Valkey systemd services to become active (up to 180s each)
           ansible.builtin.systemd_service:
-            name: valkey.service
-          register: valkey_service
-          until: valkey_service.status.ActiveState == 'active'
+            name: "{{ item }}"
+          register: valkey_services
+          until: valkey_services.status.ActiveState == 'active'
           retries: 36
           delay: 5
+          loop: "{{ valkey_verify_units }}"
           # So that giving up is reported by the assertion below rather than as a
           # wall of systemd unit properties.
           failed_when: false
@@ -35,17 +40,20 @@
         # `Restart=always` in the systemd unit means that even a container which crashes
         # and gets restarted reads as active here, so this is a precondition rather than
         # a result.
-        - name: Assert the Valkey systemd service is active
+        - name: Assert the Valkey systemd services are active
           ansible.builtin.assert:
-            that: valkey_service.status.ActiveState == 'active'
-            fail_msg: "valkey.service is not active ({{ valkey_service.status.ActiveState }})"
-            success_msg: "valkey.service is active"
+            that: valkey_services.results | map(attribute='status.ActiveState') | unique | list == ['active']
+            fail_msg: >-
+              Not every service is active:
+              {{ dict(valkey_verify_units | zip(valkey_services.results | map(attribute='status.ActiveState'))) }}
+            success_msg: "Every systemd service is active"
 
-        - name: Retrieve the Valkey systemd service log for debugging
+        - name: Retrieve the Valkey systemd services log for debugging
           when: valkey_debug_service_enabled | bool
           ansible.builtin.command:
-            cmd: journalctl --no-pager --output=cat --unit=valkey.service
+            cmd: "journalctl --no-pager --output=cat --unit={{ item }}"
           changed_when: false
+          loop: "{{ valkey_verify_units }}"
 
         # A systemd unit reaching "active" only means that `docker start` has not
         # exited yet. PING is the cheapest answer the server itself can give, so it
@@ -162,7 +170,7 @@
         - name: Show the Valkey verification summary
           ansible.builtin.debug:
             msg:
-              - "Valkey systemd: {{ valkey_service.status.ActiveState }}"
+              - "Valkey systemd: {% for unit, state in valkey_verify_units | zip(valkey_services.results | map(attribute='status.ActiveState')) %}{{ unit }} ({{ state }}){% if not loop.last %}, {% endif %}{% endfor %}"
               - "Valkey version: {{ valkey_reported_version }}"
               - "Valkey PING over TCP: {{ valkey_ping_tcp.stdout }}"
               - "Valkey PING over UNIX socket: {{ valkey_ping_socket.stdout }}"
