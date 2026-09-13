@@ -79,6 +79,25 @@
             fail_msg: "Valkey did not answer PING over TCP: {{ valkey_ping_tcp.stdout | default('no output') }}"
             success_msg: "Valkey answers PING over TCP"
 
+        - name: Query the version of the running Valkey
+          ansible.builtin.command:
+            cmd: >-
+              docker exec {{ valkey_defaults.valkey_identifier }}
+              valkey-cli -a {{ valkey_connection_password }} --no-auth-warning
+              INFO server
+          register: valkey_info_server
+          changed_when: false
+
+        - name: Determine the version of the running Valkey
+          ansible.builtin.set_fact:
+            valkey_reported_version: "{{ (valkey_info_server.stdout | regex_search('valkey_version:([^\\r\\n]+)', '\\1') | first) | trim }}"
+
+        - name: Assert the running Valkey is the version this role installs
+          ansible.builtin.assert:
+            that: valkey_reported_version.startswith(valkey_defaults.valkey_version | string)
+            fail_msg: "Valkey reports {{ valkey_reported_version | default('none') }}, expected {{ valkey_defaults.valkey_version }}"
+            success_msg: "Valkey reports {{ valkey_reported_version }}"
+
         # Consumers of this role talk to Valkey over the UNIX socket that the role
         # asks for in valkey.conf, not over TCP, so the socket listener is the path
         # that actually matters and is worth probing separately.
@@ -144,28 +163,6 @@
               - valkey_get.stdout is search('molecule-value')
             fail_msg: "A SET/GET round-trip failed (SET: {{ valkey_set.stdout }}, GET: {{ valkey_get.stdout }})"
             success_msg: "A SET/GET round-trip works"
-
-        # Tying the running version to `valkey_version` is what makes this scenario
-        # a real test of the version that Renovate bumps: a bump that produces an
-        # unusable image cannot pass here.
-        - name: Query the version of the running Valkey
-          ansible.builtin.command:
-            cmd: >-
-              docker exec {{ valkey_defaults.valkey_identifier }}
-              valkey-cli -a {{ valkey_connection_password }} --no-auth-warning
-              INFO server
-          register: valkey_info_server
-          changed_when: false
-
-        - name: Determine the version of the running Valkey
-          ansible.builtin.set_fact:
-            valkey_reported_version: "{{ (valkey_info_server.stdout | regex_search('valkey_version:([^\\r\\n]+)', '\\1') | first) | trim }}"
-
-        - name: Assert the running Valkey is the version this role installs
-          ansible.builtin.assert:
-            that: valkey_reported_version.startswith(valkey_defaults.valkey_version | string)
-            fail_msg: "Valkey reports {{ valkey_reported_version | default('none') }}, expected {{ valkey_defaults.valkey_version }}"
-            success_msg: "Valkey reports {{ valkey_reported_version }}"
 
         - name: Show the Valkey verification summary
           ansible.builtin.debug:
