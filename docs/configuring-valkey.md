@@ -18,20 +18,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Setting up Valkey
 
-> [!NOTE]
-> Starting from 8.0.0, Valkey is licensed under your choice of the multiple licenses, one of which is AGPLv3. Refer to [the release note for 8.0.0](https://github.com/valkey/valkey/releases/tag/8.0.0) for details.
-
 This is an [Ansible](https://www.ansible.com/) role which installs [Valkey](https://valkey.io/) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
 
-Valkey is a free and open-source, in-memory data store used as a database, cache, streaming engine, and message broker.
+Valkey is a fork of [Redis](https://redis.io/), a flexible distributed key-value datastore that is optimized for caching and other realtime workloads.
 
-See the project's [documentation](https://valkey.io/docs/latest/) to learn what Valkey does and why it might be useful to you.
+See the project's [documentation](https://valkey.io/docs/) to learn what Valkey does and why it might be useful to you.
 
 > [!WARNING]
-> Because Valkey is not as flexible as other databases such as Postgres when it comes to authentication and data separation, it's **recommended that you run separate Valkey instances** (one for each service which require Valkey). Valkey supports multiple database and a [SELECT](https://valkey.io/commands/select/) command for switching between them. However, **reusing the same Valkey instance is not good enough** because:
+> Because Valkey is not as flexible as Postgres when it comes to authentication and data separation, it's **recommended that you run separate Valkey instances** (one for each service). Valkey supports multiple database and a [SELECT](https://valkey.io/commands/select/) command for switching between them. However, **reusing the same Valkey instance is not good enough** because:
 >
 > - if all services use the same Valkey instance and database (id = 0), services may conflict with one another
-> - the number of databases is limited to [16 by default](https://github.com/valkey/valkey/blob/aa2403ca98f6a39b6acd8373f8de1a7ba75162d5/valkey.conf#L376-L379), which may or may not be enough. With configuration changes, this is solvable.
+> - the number of databases is limited to [16 by default](https://github.com/valkey-io/valkey/blob/33f42d7fb597ce28040f184ee57ed86d6f6ffbd8/valkey.conf#L396), which may or may not be enough. With configuration changes, this is solvable.
 > - some services do not support switching the Valkey database and always insist on using the default one (id = 0)
 > - Valkey [does not support different authentication credentials for its different databases](https://stackoverflow.com/a/37262596), so each service can potentially read and modify other services' data
 
